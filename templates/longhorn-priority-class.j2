@@ -1,0 +1,9 @@
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+description: "Used for Longhorn components."
+metadata:
+  name: {{ longhorn_priority_class }}
+value: {{ longhorn_priority_class_value }}
+preemptionPolicy: {{ longhorn_priority_class_preemtion_policy }}
+globalDefault: false

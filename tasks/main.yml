@@ -1,0 +1,38 @@
+---
+- name: include Longhorn prerequisites
+  ansible.builtin.include_tasks:
+    file: tasks/longhorn_prerequisites.yml
+  when: (longhorn_nodes is not defined) or (longhorn_nodes is defined and inventory_hostname in groups[longhorn_nodes])
+
+- name: include k8s module prerequisites
+  ansible.builtin.include_tasks:
+    file: tasks/k8s_module_prerequisites.yml
+  when: inventory_hostname == longhorn_delegate_to
+
+- name: label Longhorn nodes
+  ansible.builtin.include_tasks:
+    file: tasks/label_longhorn_nodes.yml
+  when:
+    - longhorn_nodes is defined and longhorn_nodes != None
+    - inventory_hostname == longhorn_delegate_to
+
+- name: label user component nodes
+  ansible.builtin.include_tasks:
+    file: tasks/label_longhorn_user_nodes.yml
+  when:
+    - longhorn_user_component_nodes is defined and longhorn_user_component_nodes != None
+    - longhorn_user_component_labels != None
+    - inventory_hostname == longhorn_delegate_to
+
+- name: label system component nodes
+  ansible.builtin.include_tasks:
+    file: tasks/label_longhorn_system_nodes.yml
+  when:
+    - longhorn_system_component_nodes is defined and longhorn_system_component_nodes != None
+    - longhorn_system_component_labels != None
+    - inventory_hostname == longhorn_delegate_to
+
+- name: include install
+  ansible.builtin.include_tasks:
+    file: tasks/install.yml
+  when: inventory_hostname == longhorn_delegate_to

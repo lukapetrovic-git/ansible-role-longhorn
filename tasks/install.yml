@@ -1,0 +1,39 @@
+---
+- block:
+    - name: add helm repo
+      kubernetes.core.helm_repository:
+        repo_name: "{{ longhorn_repo_name }}"
+        repo_url: "{{ longhorn_chart_url }}"
+
+    - name: create namespace
+      kubernetes.core.k8s:
+        template: templates/longhorn-namespace.j2
+        state: present
+
+    - name: create priority class
+      kubernetes.core.k8s:
+        template: templates/longhorn-priority-class.j2
+        state: present
+      when: longhorn_create_priority_class == true
+
+    - name: create longhorn config
+      ansible.builtin.template:
+        src: "longhorn-config.j2"
+        dest: "{{ longhorn_config_path }}"
+
+    - name: install Longhorn
+      kubernetes.core.helm:
+        name: "{{ longhorn_release_name }}"
+        chart_ref: "{{ longhorn_chart_name }}"
+        chart_version: "{{ longhorn_version }}"
+        release_namespace: "{{ longhorn_namespace }}"
+        create_namespace: false
+        update_repo_cache: true
+        values_files:
+          - "{{ longhorn_config_path }}"
+        wait: true
+        timeout: 10m0s
+  delegate_to: "{{ longhorn_delegate_to }}"
+  run_once: true
+  environment:
+    KUBECONFIG: "{{ longhorn_kubeconfig_path }}"

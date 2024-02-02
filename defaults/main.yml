@@ -1,0 +1,234 @@
+# Longhorn package requirements - https://longhorn.io/docs/1.5.3/deploy/install/#installation-requirements
+longhorn_dependencies:
+  - open-iscsi
+  - util-linux
+  - bash
+  - curl
+  - grep
+  - gawk
+  - fdisk
+  - nfs-common
+
+# Ansible k8s module requirements - https://docs.ansible.com/ansible/latest/collections/kubernetes/core/k8s_module.html#requirements
+longhorn_k8s_module_dependencies:
+  - kubernetes
+  - PyYAML
+  - jsonpatch
+
+# Longhorn helm repo name and chart url
+longhorn_repo_name: longhorn
+longhorn_chart_url: https://charts.longhorn.io
+
+# Longhorn helm release name
+longhorn_release_name: longhorn
+
+# Longhorn helm chart name
+longhorn_chart_name: longhorn/longhorn
+
+# Longhorn  version
+longhorn_version: 1.5.3
+
+# Host to delegate tasks for installing Longhorn via helm chart, can be Ansible Controller/Node in the cluster etc
+# Needs to have helm installed, and a kubeconfig file for accessing/modifying the cluster
+longhorn_delegate_to:
+
+# Namespace for Longhorn components
+longhorn_namespace: longhorn-system
+
+# Path to kubectl binary, if left as "kubectl" then kubectl has to be a part of PATH
+longhorn_kubectl_path: kubectl
+
+# Path to kubeconfig file to use
+longhorn_kubeconfig_path: ~/.kube/config
+
+# Path to template longhorn config to
+longhorn_config_path: /home/{{ ansible_user }}/longhorn-config.yml
+
+# (optional) Ansible group name that limits Longhorn to only use storage from specific nodes
+# https://longhorn.io/kb/tip-only-use-storage-on-a-set-of-nodes/
+# longhorn_nodes:
+
+# (applicable only if longhorn_nodes is defined) Label to apply to Ansible group name that limits Longhorn to only use storage from specific nodes
+# https://longhorn.io/kb/tip-only-use-storage-on-a-set-of-nodes/#tell-longhorn-to-create-a-default-disk-on-a-specific-set-of-nodes
+# defaultSettings.createDefaultDiskLabeledNodes needs to be set to true as well
+longhorn_nodes_label:
+  key: node.longhorn.io/create-default-disk
+  value: "true"
+
+# (optional) Ansible group name for Longhorn nodes with "user components" should run.
+# https://longhorn.io/docs/archives/1.2.2/advanced-resources/deploy/node-selector/#setting-up-node-selector-for-longhorn
+# - Manager
+# - Driver Deployer
+# - UI
+# - etc
+# longhorn_user_component_nodes: "longhorn_user_nodes"
+
+# (optional) The same but for "system components".
+# - Instance Manager
+# - Engine Image
+# - CSI Driver
+# longhorn_system_component_nodes: "longhorn_system_nodes"
+
+# (applicable only if longhorn_user_component_nodes is defined) Labels to apply to Longhorn nodes for the user component selector to work
+# User component labels
+longhorn_user_component_labels:
+  - key: longhorn-user-components
+    value: "true"
+
+# (applicable only if longhorn_system_component_nodes is defined) Labels to apply to Longhorn nodes for the system component selector to work
+# System component labels
+longhorn_system_component_labels:
+  - key: longhorn-system-components
+    value: "true"
+
+# Priority class
+
+# Use longhorn default priority class (added in Longhorn 1.16.0)
+# Only one of longhorn_use_default_priority_class or longhorn_create_priority_class can be true at a time
+longhorn_use_default_priority_class: false
+
+# Set to true if you wish to create a custom priority class for Longhorn components
+# Only one of longhorn_use_default_priority_class or longhorn_create_priority_class can be true at a time
+longhorn_create_priority_class: false
+
+# Custom priority class name for Longhorn components
+longhorn_priority_class: longhorn
+
+# Custom priority class value for Longhorn
+longhorn_priority_class_value: 1000000
+
+# Custom priority class preemption policy
+longhorn_priority_class_preemtion_policy: Never
+
+# Available types: k3s, rke2, rke1
+# longhorn_network_policies_config:
+#   enabled: false
+#   type: "k3s"
+
+# https://longhorn.io/docs/1.5.3/references/storage-class-parameters/
+# longhorn_persistence_config:
+#   defaultClass: true
+#   defaultFsType: ext4
+#   defaultMkfsParams: ""
+#   defaultClassReplicaCount: 3
+#   defaultDataLocality: disabled # best-effort otherwise
+#   reclaimPolicy: Delete
+#   migratable: false
+#   recurringJobSelector:
+#     enable: false
+#     jobList: []
+#   backingImage:
+#     enable: false
+#     name: ~
+#     dataSourceType: ~
+#     dataSourceParameters: ~
+#     expectedChecksum: ~
+#   defaultNodeSelector:
+#     enable: false # disable by default
+#     selector: ""
+#   removeSnapshotsDuringFilesystemTrim: ignored # "enabled" or "disabled" otherwise
+
+# longhorn_csi_config:
+#   kubeletRootDir: "/var/lib/kubelet"
+#   attacherReplicaCount: ~
+#   provisionerReplicaCount: ~
+#   resizerReplicaCount: ~
+#   snapshotterReplicaCount: ~
+
+# https://longhorn.io/docs/1.5.3/references/settings/
+longhorn_default_settings_config:
+  # allowRecurringJobWhileVolumeDetached: ~
+  createDefaultDiskLabeledNodes: '{% if longhorn_nodes is defined %}true{% else %}false{% endif %}'
+#   defaultDataPath: ~
+#   defaultDataLocality: ~
+#   replicaSoftAntiAffinity: ~
+#   replicaAutoBalance: ~
+  storageOverProvisioningPercentage: 100
+  storageMinimalAvailablePercentage: 10
+#   storageReservedPercentageForDefaultDisk: ~
+#   upgradeChecker: ~
+#   defaultReplicaCount: ~
+#   defaultLonghornStaticStorageClass: ~
+#   backupstorePollInterval: ~
+#   failedBackupTTL: ~
+#   restoreVolumeRecurringJobs: ~
+#   recurringSuccessfulJobsHistoryLimit: ~
+#   recurringFailedJobsHistoryLimit: ~
+#   supportBundleFailedHistoryLimit: ~
+#   taintToleration: ~
+  systemManagedComponentsNodeSelector: "{% if longhorn_system_component_nodes is defined %}{% for item in longhorn_system_component_labels %}{{ item.key }}:{{ item.value }}{% if not loop.last %},{% endif %}{% endfor %}{% else %}{% endif %}"
+  priorityClass: "{% if longhorn_create_priority_class == true %}{{ longhorn_priority_class }}{% elif longhorn_use_default_priority_class == true %}longhorn-critical{% else %}{% endif %}"
+#   autoSalvage: ~
+#   autoDeletePodWhenVolumeDetachedUnexpectedly: ~
+#   disableSchedulingOnCordonedNode: ~
+#   replicaZoneSoftAntiAffinity: ~
+#   nodeDownPodDeletionPolicy: ~
+#   nodeDrainPolicy: ~
+#   replicaReplenishmentWaitInterval: ~
+#   concurrentReplicaRebuildPerNodeLimit: ~
+#   concurrentVolumeBackupRestorePerNodeLimit: ~
+#   disableRevisionCounter: ~
+#   systemManagedPodsImagePullPolicy: ~
+  allowVolumeCreationWithDegradedAvailability: false
+#   autoCleanupSystemGeneratedSnapshot: ~
+#   concurrentAutomaticEngineUpgradePerNodeLimit: ~
+#   backingImageCleanupWaitInterval: ~
+#   backingImageRecoveryWaitInterval: ~
+#   guaranteedInstanceManagerCPU: ~
+#   kubernetesClusterAutoscalerEnabled: ~
+#   orphanAutoDeletion: ~
+#   storageNetwork: ~
+#   deletingConfirmationFlag: ~
+#   engineReplicaTimeout: ~
+#   snapshotDataIntegrity: ~
+#   snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: ~
+#   snapshotDataIntegrityCronjob: ~
+#   removeSnapshotsDuringFilesystemTrim: ~
+#   fastReplicaRebuildEnabled: ~
+#   replicaFileSyncHttpClientTimeout: ~
+#   logLevel: ~
+#   backupCompressionMethod: ~
+#   backupConcurrentLimit: ~
+#   restoreConcurrentLimit: ~
+#   v2DataEngine: ~
+#   offlineReplicaRebuilding: ~
+
+# longhorn_private_registry_config:
+#   createSecret: ~
+#   registryUrl: ~
+#   registryUser: ~
+#   registryPasswd: ~
+#   registrySecret: ~
+
+# Longhorn Manager
+# Longhorn Manager log format
+# Valid values:
+# - plain
+# - json
+longhorn_manager_log_format: plain
+
+# Longhorn manager priority class
+longhorn_manager_priority_class: "{% if longhorn_create_priority_class == true %}{{ longhorn_priority_class }}{% elif longhorn_use_default_priority_class == true %}longhorn-critical{% else %}{% endif %}"
+
+# Longhorn manager tolerations
+# longhorn_manager_tolerations: []
+
+# Longhorn Driver
+# Longhorn Driver priority class
+longhorn_driver_priority_class: "{% if longhorn_create_priority_class == true %}{{ longhorn_priority_class }}{% elif longhorn_use_default_priority_class == true %}longhorn-critical{% else %}{% endif %}"
+
+# Longhorn driver tolerations
+# longhorn_driver_tolerations: []
+
+# Longhorn UI
+# Longhorn UI replica count
+longhorn_ui_replica_count: 2
+
+# Longhorn UI priority class
+longhorn_ui_priority_class: "{% if longhorn_create_priority_class == true %}{{ longhorn_priority_class }}{% elif longhorn_use_default_priority_class == true %}longhorn-critical{% else %}{% endif %}"
+
+# Longhorn UI tolerations
+# longhorn_ui_tolerations: []
+
+# Create a Prometheus ServiceMonitor resource for Longhorn Manager components.
+longhorn_enable_service_monitor: false

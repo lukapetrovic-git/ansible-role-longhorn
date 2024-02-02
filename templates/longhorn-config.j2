@@ -1,0 +1,66 @@
+#jinja2:lstrip_blocks:True,trim_blocks:True
+
+{% if longhorn_network_policies_config is defined %}
+networkPolicies: {{ longhorn_network_policies_config }}
+{% endif %}
+
+{% if longhorn_persistence_config is defined %}
+persistence: {{ longhorn_persistence_config }}
+{% endif %}
+
+{% if longhorn_csi_config is defined %}
+csi: {{ longhorn_csi_config  }}
+{% endif %}
+
+{% if longhorn_default_settings_config is defined %}
+defaultSettings: {{ longhorn_default_settings_config }}
+{% endif %}
+
+{% if longhorn_private_registry_config is defined %}
+privateRegistry: {{ longhorn_private_registry_config }}
+{% endif %}
+
+longhornManager:
+  log:
+    format: {{ longhorn_manager_log_format }}
+  priorityClass: {{ longhorn_manager_priority_class }}
+  {% if longhorn_manager_tolerations is defined %}
+  tolerations: {{ longhorn_manager_tolerations }}
+  {% endif %}
+  {% if longhorn_user_component_nodes is defined %}
+  nodeSelector:
+  {% for item in longhorn_user_component_labels %}
+      {{ item.key }}: "{{ item.value }}"
+  {%  endfor %}
+  {% endif %}
+  serviceAnnotations: {}
+
+longhornDriver:
+  priorityClass: {{ longhorn_driver_priority_class }}
+  {% if longhorn_driver_tolerations is defined %}
+  tolerations: {{ longhorn_driver_tolerations }}
+  {% endif %}
+  {% if longhorn_user_component_nodes is defined %}
+  nodeSelector:
+  {% for item in longhorn_user_component_labels %}
+      {{ item.key }}: "{{ item.value }}"
+  {%  endfor %}
+  {% endif %}
+
+longhornUI:
+  replicas: {{ longhorn_ui_replica_count }}
+  priorityClass: {{ longhorn_ui_priority_class }}
+  {% if longhorn_ui_tolerations is defined %}
+  tolerations: {{ longhorn_ui_tolerations }}
+  {% endif %}
+  {% if longhorn_user_component_nodes is defined %}
+  nodeSelector:
+  {% for item in longhorn_user_component_labels %}
+      {{ item.key }}: "{{ item.value }}"
+  {%  endfor %}
+  {% endif %}
+
+metrics:
+  serviceMonitor:
+    enabled: {{ longhorn_enable_service_monitor }}
+

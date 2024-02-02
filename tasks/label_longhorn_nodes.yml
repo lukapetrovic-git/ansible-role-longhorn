@@ -1,0 +1,6 @@
+---
+- name: label nodes for Longhorn to run on
+  ansible.builtin.shell:
+    cmd: "{{ longhorn_kubectl_path }} label nodes --overwrite {{ groups[longhorn_nodes] | join(' ')  }} {{ longhorn_nodes_label.key }}={{ longhorn_nodes_label.value }}"
+  environment:
+    KUBECONFIG: "{{ longhorn_kubeconfig_path }}"
