@@ -34,7 +34,6 @@
           - "{{ longhorn_config_path }}"
         wait: true
         timeout: 10m0s
-      become: false
   delegate_to: "{{ longhorn_delegate_to }}"
   run_once: true
   environment:

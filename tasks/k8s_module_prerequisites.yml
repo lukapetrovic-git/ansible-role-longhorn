@@ -17,6 +17,5 @@
     plugin_path: "https://github.com/databus23/helm-diff"
     plugin_version: 3.9.5
     state: present
-  become: false
   environment:
     KUBECONFIG: "{{ longhorn_kubeconfig_path }}"
