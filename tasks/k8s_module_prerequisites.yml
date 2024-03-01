@@ -11,3 +11,11 @@
   ansible.builtin.pip:
     name: "{{ longhorn_k8s_module_dependencies }}"
     state: present
+
+- name: install helm diff
+  kubernetes.core.helm_plugin:
+    plugin_path: "https://github.com/databus23/helm-diff"
+    plugin_version: 3.9.5
+    state: present
+  environment:
+    KUBECONFIG: "{{ longhorn_kubeconfig_path }}"
