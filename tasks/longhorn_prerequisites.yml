@@ -1,39 +1,39 @@
 ---
 # installing packages/enabling services required for longhorn - https://longhorn.io/docs/1.5.3/deploy/install/#installation-requirements
-- name: ensure dependencies are installed
+- name: Ensure dependencies are installed
   ansible.builtin.apt:
     name: "{{ longhorn_dependencies }}"
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
 
-- name: iscsi_tcp kernel module
+- name: Iscsi_tcp kernel module
   community.general.modprobe:
     name: iscsi_tcp
     persistent: present
     state: present
 
-- name: iscsid is enabled and started on boot
+- name: Iscsid is enabled and started on boot
   ansible.builtin.service:
     name: iscsid
     state: started
     enabled: true
 
 # Fixing multipath issue - https://longhorn.io/kb/troubleshooting-volume-with-multipath/#solution
-- name: multipathd conf.d directory exists
+- name: Multipathd conf.d directory exists
   ansible.builtin.file:
     path: /etc/multipath/conf.d
     state: directory
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root
 
-- name: ensure multipathd blacklist
+- name: Ensure multipathd blacklist
   ansible.builtin.copy:
     src: files/99-longhorn.conf
     dest: /etc/multipath/conf.d/99-longhorn.conf
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
   notify:
-    - restart multipathd
+    - Restart multipathd

@@ -1,7 +1,7 @@
 ---
-- name: label system component nodes
-  ansible.builtin.shell:
-    cmd: "{{ longhorn_kubectl_path }} label nodes --overwrite {{ groups[longhorn_system_component_nodes] | join(' ')  }} {{ item.key }}={{ item.value }}"
+- name: Label system component nodes
+  ansible.builtin.command: "{{ longhorn_kubectl_path }} label nodes --overwrite {{ groups[longhorn_system_component_nodes] | join(' ') }} {{ item.key }}={{ item.value }}"
   environment:
     KUBECONFIG: "{{ longhorn_kubeconfig_path }}"
   loop: "{{ longhorn_system_component_labels }}"
+  changed_when: true

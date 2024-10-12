@@ -1,0 +1,10 @@
+---
+collections:
+  - name: community.general
+    version: 9.4.0
+    type: galaxy
+
+  - name: kubernetes.core
+    version: 3.0.0
+
+roles: []

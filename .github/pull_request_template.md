@@ -4,7 +4,6 @@ Add pull request summary + related issue here.
 --->
 
 ## Change type
-
 - [ ] Bug fix (non-breaking change which fixes a specific issue)
 - [ ] New feature (non-breaking change adding new functionality)
 - [ ] Breaking change (fix or feature that potentially causes existing functionality to fail)
