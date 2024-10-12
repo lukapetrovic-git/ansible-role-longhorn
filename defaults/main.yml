@@ -1,3 +1,4 @@
+---
 # Longhorn package requirements - https://longhorn.io/docs/1.5.3/deploy/install/#installation-requirements
 longhorn_dependencies:
   - open-iscsi
@@ -138,37 +139,37 @@ longhorn_priority_class_preemtion_policy: Never
 # https://longhorn.io/docs/1.5.3/references/settings/
 longhorn_default_settings_config:
   # allowRecurringJobWhileVolumeDetached: ~
-  createDefaultDiskLabeledNodes: '{% if longhorn_nodes is defined %}true{% else %}false{% endif %}'
-#   defaultDataPath: ~
-#   defaultDataLocality: ~
-#   replicaSoftAntiAffinity: ~
-#   replicaAutoBalance: ~
+  createDefaultDiskLabeledNodes: "{% if longhorn_nodes is defined %}true{% else %}false{% endif %}"
+  #   defaultDataPath: ~
+  #   defaultDataLocality: ~
+  #   replicaSoftAntiAffinity: ~
+  #   replicaAutoBalance: ~
   storageOverProvisioningPercentage: 100
   storageMinimalAvailablePercentage: 10
-#   storageReservedPercentageForDefaultDisk: ~
-#   upgradeChecker: ~
-#   defaultReplicaCount: ~
-#   defaultLonghornStaticStorageClass: ~
-#   backupstorePollInterval: ~
-#   failedBackupTTL: ~
-#   restoreVolumeRecurringJobs: ~
-#   recurringSuccessfulJobsHistoryLimit: ~
-#   recurringFailedJobsHistoryLimit: ~
-#   supportBundleFailedHistoryLimit: ~
-#   taintToleration: ~
+  #   storageReservedPercentageForDefaultDisk: ~
+  #   upgradeChecker: ~
+  #   defaultReplicaCount: ~
+  #   defaultLonghornStaticStorageClass: ~
+  #   backupstorePollInterval: ~
+  #   failedBackupTTL: ~
+  #   restoreVolumeRecurringJobs: ~
+  #   recurringSuccessfulJobsHistoryLimit: ~
+  #   recurringFailedJobsHistoryLimit: ~
+  #   supportBundleFailedHistoryLimit: ~
+  #   taintToleration: ~
   systemManagedComponentsNodeSelector: "{% if longhorn_system_component_nodes is defined %}{% for item in longhorn_system_component_labels %}{{ item.key }}:{{ item.value }}{% if not loop.last %},{% endif %}{% endfor %}{% else %}{% endif %}"
   priorityClass: "{% if longhorn_create_priority_class == true %}{{ longhorn_priority_class }}{% elif longhorn_use_default_priority_class == true %}longhorn-critical{% else %}{% endif %}"
-#   autoSalvage: ~
-#   autoDeletePodWhenVolumeDetachedUnexpectedly: ~
-#   disableSchedulingOnCordonedNode: ~
-#   replicaZoneSoftAntiAffinity: ~
-#   nodeDownPodDeletionPolicy: ~
-#   nodeDrainPolicy: ~
-#   replicaReplenishmentWaitInterval: ~
-#   concurrentReplicaRebuildPerNodeLimit: ~
-#   concurrentVolumeBackupRestorePerNodeLimit: ~
-#   disableRevisionCounter: ~
-#   systemManagedPodsImagePullPolicy: ~
+  #   autoSalvage: ~
+  #   autoDeletePodWhenVolumeDetachedUnexpectedly: ~
+  #   disableSchedulingOnCordonedNode: ~
+  #   replicaZoneSoftAntiAffinity: ~
+  #   nodeDownPodDeletionPolicy: ~
+  #   nodeDrainPolicy: ~
+  #   replicaReplenishmentWaitInterval: ~
+  #   concurrentReplicaRebuildPerNodeLimit: ~
+  #   concurrentVolumeBackupRestorePerNodeLimit: ~
+  #   disableRevisionCounter: ~
+  #   systemManagedPodsImagePullPolicy: ~
   allowVolumeCreationWithDegradedAvailability: false
 #   autoCleanupSystemGeneratedSnapshot: ~
 #   concurrentAutomaticEngineUpgradePerNodeLimit: ~
