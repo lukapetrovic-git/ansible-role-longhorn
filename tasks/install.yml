@@ -14,6 +14,7 @@
       ansible.builtin.template:
         src: templates/longhorn-namespace.j2
         dest: /tmp/longhorn-namespace.yml
+        mode: "0600"
         force: true
 
     - name: Create namespace
@@ -24,6 +25,7 @@
       ansible.builtin.template:
         src: templates/longhorn-priority-class.j2
         dest: /tmp/longhorn-priority-class.yml
+        mode: "0600"
         force: true
       when: longhorn_create_priority_class | bool
 
