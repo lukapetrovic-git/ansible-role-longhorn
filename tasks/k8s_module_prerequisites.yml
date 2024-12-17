@@ -1,17 +1,5 @@
 ---
-# Installing requirements for Ansible k8s module https://docs.ansible.com/ansible/latest/collections/kubernetes/core/k8s_module.html#requirements
-- name: Ensure pip is installed
-  ansible.builtin.apt:
-    name: python3-pip
-    state: present
-    update_cache: true
-    cache_valid_time: 3600
-
-- name: Ensure k8s module dependencies are installed
-  ansible.builtin.pip:
-    name: "{{ longhorn_k8s_module_dependencies }}"
-    state: present
-
+# https://docs.ansible.com/ansible/latest/collections/kubernetes/core/helm_module.html#notes
 - name: Install helm diff
   kubernetes.core.helm_plugin:
     plugin_path: "https://github.com/databus23/helm-diff"

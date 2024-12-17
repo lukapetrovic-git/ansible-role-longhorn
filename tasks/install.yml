@@ -10,15 +10,28 @@
         repo_name: "{{ longhorn_repo_name }}"
         repo_url: "{{ longhorn_chart_url }}"
 
+    - name: Template namespace
+      ansible.builtin.template:
+        src: templates/longhorn-namespace.j2
+        dest: /tmp/longhorn-namespace.yml
+        mode: "0600"
+        force: true
+
     - name: Create namespace
-      kubernetes.core.k8s:
-        template: templates/longhorn-namespace.j2
-        state: present
+      ansible.builtin.command: "{{ longhorn_kubectl_path }} apply -f /tmp/longhorn-namespace.yml"
+      changed_when: false
+
+    - name: Template priority class
+      ansible.builtin.template:
+        src: templates/longhorn-priority-class.j2
+        dest: /tmp/longhorn-priority-class.yml
+        mode: "0600"
+        force: true
+      when: longhorn_create_priority_class | bool
 
     - name: Create priority class
-      kubernetes.core.k8s:
-        template: templates/longhorn-priority-class.j2
-        state: present
+      ansible.builtin.command: "{{ longhorn_kubectl_path }} apply -f /tmp/longhorn-priority-class.yml"
+      changed_when: false
       when: longhorn_create_priority_class | bool
 
     - name: Create longhorn config
