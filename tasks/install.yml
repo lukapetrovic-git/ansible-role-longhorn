@@ -38,15 +38,15 @@
         dest: "{{ longhorn_config_path }}"
         mode: "0600"
 
-    # - name: Install Longhorn
-    #   kubernetes.core.helm:
-    #     name: "{{ longhorn_release_name }}"
-    #     chart_ref: "{{ longhorn_chart_name }}"
-    #     chart_version: "{{ longhorn_version }}"
-    #     release_namespace: "{{ longhorn_namespace }}"
-    #     create_namespace: false
-    #     update_repo_cache: true
-    #     values_files:
-    #       - "{{ longhorn_config_path }}"
-    #     wait: true
-    #     timeout: 10m0s
+    - name: Install Longhorn
+      kubernetes.core.helm:
+        name: "{{ longhorn_release_name }}"
+        chart_ref: "{{ longhorn_chart_name }}"
+        chart_version: "{{ longhorn_version }}"
+        release_namespace: "{{ longhorn_namespace }}"
+        create_namespace: false
+        update_repo_cache: true
+        values_files:
+          - "{{ longhorn_config_path }}"
+        wait: true
+        timeout: 10m0s
